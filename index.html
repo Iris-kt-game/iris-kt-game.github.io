@@ -147,9 +147,9 @@
  
         /* АДАПТИВ */
         @media (max-width:768px) {
-            .hero-body { flex-direction: column; text-align:center; }
-            .hero-right { flex: 1 1 auto; width:100%; max-width:280px; }
-            .hero-title h1 { font-size:2rem; }
+            .hero-body { flex-direction: column; align-items: flex-start; text-align:left; }
+            .hero-right img { height: auto; display: block; margin: 0 auto; width:100%; min-width:460px; }
+            .hero-title h1 { font-size:1.8rem; line-height:1.1; margin-bottom:0.5rem; }
             .hero-title .subhead { font-size:1rem; }
             .hero-title .subhead-italic { font-size:0.95rem; }
             .hero-left ul li { font-size:0.85rem; padding:2px 0; }
@@ -214,7 +214,7 @@
         <img src="vektor.jpg" alt="Эверест. Канатная дорога" style="width:100%; height:auto; border-radius:12px; border:1px solid rgba(212,168,67,0.3); box-shadow:0 8px 40px rgba(0,0,0,0.7); display:block;">
  
         <!-- Подпись "Смысл" — выше (над горой) -->
-        <div style="position:absolute; top:-25px; left:50%; transform:translateX(-50%); 
+        <div style="position:absolute; top:-50px; left:50%; transform:translateX(-50%); 
                     color:#D4A843; font-size:1.6rem; font-weight:600; 
                     text-shadow:0 0 30px rgba(212,168,67,0.8), 0 0 60px rgba(212,168,67,0.4);
                     letter-spacing:0.1em; padding:4px 16px;
@@ -223,7 +223,7 @@
         </div>
  
         <!-- Подпись "Результат (деньги)" — ниже (под горой) -->
-        <div style="position:absolute; bottom:-10px; left:50%; transform:translateX(-50%);
+        <div style="position:absolute; bottom:-50px; left:50%; transform:translateX(-50%);
                     color:#F5F0E6; font-size:1.1rem; font-weight:500;
                     background:rgba(15,30,26,0.6); padding:4px 16px; border-radius:20px; backdrop-filter:blur(4px);
                     border:1px solid rgba(212,168,67,0.2); white-space:nowrap;">
@@ -231,7 +231,7 @@
         </div>
  
         <!-- Номера этажей 2–9 (вертикальная линия слева от фото) -->
-        <div style="position:absolute; left:-4px; top:12%; bottom:12%; display:flex; flex-direction:column; justify-content:space-between; align-items:center; 
+        <div style="position:absolute; left:-20px; top:10%; bottom:8%; display:flex; flex-direction:column; justify-content:space-between; align-items:center; 
                     color:#A8B5A0; font-size:0.75rem; font-weight:400; 
                     background:rgba(15,30,26,0.4); padding:6px 3px; border-radius:12px; backdrop-filter:blur(2px);">
             <span>9</span>
