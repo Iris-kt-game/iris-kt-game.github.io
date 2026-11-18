@@ -360,19 +360,104 @@
     </div>
 </section>
     <!-- КАЛЬКУЛЯТОР ИНДЕКСА УПРАВЛЯЕМОСТИ -->
-<section id="kalkulyator" class="container">
+<section id="kalkulyator" class="container" style="padding:60px 0;">
   <h2 class="section-title"><span class="gold">Индекс</span> управляемости</h2>
   <p style="color:#8A9A82; font-size:1.1rem; text-align:center; max-width:640px; margin:0 auto 30px;">
-    2 минуты — и вы увидите свой индекс: доля дел с ответственным × доля в срок × доля без переделок.
-    Чем точнее оцифруете задачи, тем точнее индекс.
+    Введите цифры по своим текущим делам — расчёт займёт 2 минуты.
   </p>
-  <iframe src="index_kalkulyator.html"
-          style="width:100%; max-width:600px; height:780px; border:none; border-radius:14px; display:block; margin:0 auto; background:transparent;">
-  </iframe>
-  <p style="text-align:center; color:#C8D0C0; margin-top:20px;">
+ 
+  <div style="max-width:640px; margin:0 auto;
+              border-left:2px solid rgba(212,168,67,0.2);
+              border-right:2px solid rgba(212,168,67,0.2);
+              padding:30px 24px; background:rgba(26,46,40,0.6);">
+ 
+    <div style="margin-bottom:14px;">
+      <label for="calc-total" style="display:block; color:#C8D0C0; font-size:0.95rem; margin-bottom:6px;">Всего дел в работе (за последний месяц)</label>
+      <input type="number" id="calc-total" min="1" value=""
+             style="width:100%; padding:10px 12px; font-size:1.05rem; background:rgba(15,30,26,0.7); color:#F5F0E6; border:1px solid rgba(212,168,67,0.4); border-radius:8px; outline:none;">
+    </div>
+ 
+    <div style="margin-bottom:14px;">
+      <label for="calc-noowner" style="display:block; color:#C8D0C0; font-size:0.95rem; margin-bottom:6px;">Из них — дел без назначенного ответственного</label>
+      <input type="number" id="calc-noowner" min="0" value=""
+             style="width:100%; padding:10px 12px; font-size:1.05rem; background:rgba(15,30,26,0.7); color:#F5F0E6; border:1px solid rgba(212,168,67,0.4); border-radius:8px; outline:none;">
+    </div>
+ 
+    <div style="margin-bottom:14px;">
+      <label for="calc-late" style="display:block; color:#C8D0C0; font-size:0.95rem; margin-bottom:6px;">Из них — дел, сдвинутых по сроку</label>
+      <input type="number" id="calc-late" min="0" value=""
+             style="width:100%; padding:10px 12px; font-size:1.05rem; background:rgba(15,30,26,0.7); color:#F5F0E6; border:1px solid rgba(212,168,67,0.4); border-radius:8px; outline:none;">
+    </div>
+ 
+    <div style="margin-bottom:14px;">
+      <label for="calc-rework" style="display:block; color:#C8D0C0; font-size:0.95rem; margin-bottom:6px;">Из них — дел, которые пришлось переделывать</label>
+      <input type="number" id="calc-rework" min="0" value=""
+             style="width:100%; padding:10px 12px; font-size:1.05rem; background:rgba(15,30,26,0.7); color:#F5F0E6; border:1px solid rgba(212,168,67,0.4); border-radius:8px; outline:none;">
+    </div>
+ 
+    <div id="calc-err" style="display:none; color:#e08080; font-size:0.9rem; margin:10px 0;">
+      Проверьте данные: составляющие не должны превышать общее число дел.
+    </div>
+ 
+    <button onclick="calcIdx()" style="width:100%; margin-top:10px; padding:14px; background:#D4A843; color:#0F1E1A; border:none; border-radius:8px; font-size:1.05rem; font-weight:600; cursor:pointer; font-family:inherit;">
+      Рассчитать индекс
+    </button>
+ 
+    <div id="calc-result" style="display:none; margin-top:26px; text-align:center;">
+      <div id="calc-idx" style="font-size:3rem; font-weight:700; color:#D4A843; line-height:1.1;">—</div>
+      <div id="calc-verdict" style="font-size:1.1rem; margin-top:8px;"></div>
+      <div id="calc-parts" style="color:#8A9A82; font-size:0.9rem; margin-top:14px; line-height:1.6;"></div>
+      <p style="color:#8A9A82; font-size:0.85rem; font-style:italic; margin-top:18px; padding-top:14px; border-top:1px solid rgba(212,168,67,0.2); line-height:1.5;">
+        Чем точнее вы оцифруете дела, тем точнее индекс. Завышенные цифры дадут красивый, но бесполезный результат.
+      </p>
+      <a href="#contact" style="display:inline-block; margin-top:14px; padding:12px 26px; border:1px solid #D4A843; border-radius:8px; color:#D4A843; text-decoration:none; font-size:1rem;">
+        Узнать, как поднять индекс — разбор в деловой игре
+      </a>
+    </div>
+  </div>
+ 
+  <p style="text-align:center; color:#C8D0C0; margin-top:20px; font-size:0.9rem;">
     Нужна полная таблица на 40 задач с ролями и планом на 24 часа — напишите в Telegram, пришлю файл.
   </p>
 </section>
+ 
+<script>
+  function calcIdx() {
+    var t  = +document.getElementById('calc-total').value   || 0;
+    var no = +document.getElementById('calc-noowner').value || 0;
+    var lt = +document.getElementById('calc-late').value    || 0;
+    var rw = +document.getElementById('calc-rework').value  || 0;
+    var err = document.getElementById('calc-err');
+ 
+    if (t < 1 || no > t || lt > t || rw > t) {
+      err.style.display = 'block';
+      document.getElementById('calc-result').style.display = 'none';
+      return;
+    }
+    err.style.display = 'none';
+ 
+    var sOwner = (t - no) / t;
+    var sTerm  = (t - lt) / t;
+    var sRw    = (t - rw) / t;
+    var idx = sOwner * sTerm * sRw;
+ 
+    document.getElementById('calc-idx').textContent = Math.round(idx * 100) + '%';
+ 
+    var v;
+    if (idx >= 0.85)      v = 'Управляемая система. Держите планку — проверяйте индекс раз в месяц.';
+    else if (idx >= 0.60) v = 'Зона риска. Система держится на вас и теряет решения на переделках.';
+    else                  v = 'Критично. Решения буксуют: дело не в людях, а в отсутствии ответственных и критериев.';
+ 
+    document.getElementById('calc-verdict').textContent = v;
+    document.getElementById('calc-parts').innerHTML =
+      'С ответственным: ' + Math.round(sOwner*100) + '% · ' +
+      'в срок: ' + Math.round(sTerm*100) + '% · ' +
+      'без переделок: ' + Math.round(sRw*100) + '%';
+ 
+    document.getElementById('calc-result').style.display = 'block';
+  }
+</script>
+<!-- КОНЕЦ КАЛЬКУЛЯТОРА -->
  <!-- КОНТАКТЫ -->
 <section id="contact" class="container" style="padding:60px 0 40px;">
     <div style="text-align:center;">
