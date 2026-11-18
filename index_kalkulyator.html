@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Индекс управляемости</title>
+<style>
+  body {
+    background: #0F1E1A;
+    color: #F5F0E6;
+    font-family: Georgia, 'Times New Roman', serif;
+    margin: 0;
+    padding: 24px 16px;
+    box-sizing: border-box;
+  }
+  *, *:before, *:after { box-sizing: inherit; }
+  .card {
+    max-width: 540px;
+    margin: 0 auto;
+    border: 1px solid rgba(212,168,67,0.35);
+    border-radius: 14px;
+    padding: 28px 24px;
+    background: rgba(26,46,40,0.4);
+  }
+  h1 { color:#D4A843; font-size:1.5rem; font-weight:500; margin:0 0 6px; text-align:center; }
+  .sub { color:#8A9A82; font-size:0.95rem; text-align:center; margin:0 0 22px; line-height:1.5; }
+  label { display:block; color:#C8D0C0; font-size:0.95rem; margin:14px 0 6px; }
+  input[type=number] {
+    width:100%; padding:10px 12px; font-size:1.05rem;
+    background:rgba(15,30,26,0.7); color:#F5F0E6;
+    border:1px solid rgba(212,168,67,0.4); border-radius:8px;
+    outline:none;
+  }
+  input[type=number]:focus { border-color:#D4A843; }
+  button {
+    width:100%; margin-top:22px; padding:14px;
+    background:#D4A843; color:#0F1E1A;
+    border:none; border-radius:8px;
+    font-size:1.05rem; font-weight:600; cursor:pointer;
+    font-family:inherit;
+  }
+  button:hover { background:#e0b95e; }
+  .result { display:none; margin-top:26px; text-align:center; }
+  .idx { font-size:3rem; font-weight:700; color:#D4A843; line-height:1.1; }
+  .verdict { font-size:1.1rem; margin-top:8px; }
+  .parts { color:#8A9A82; font-size:0.9rem; margin-top:14px; line-height:1.6; }
+  .warn {
+    color:#8A9A82; font-size:0.85rem; font-style:italic;
+    margin-top:18px; padding-top:14px;
+    border-top:1px solid rgba(212,168,67,0.2); line-height:1.5;
+  }
+  .cta {
+    display:inline-block; margin-top:18px; padding:12px 26px;
+    border:1px solid #D4A843; border-radius:8px;
+    color:#D4A843; text-decoration:none; font-size:1rem; cursor:pointer;
+    background:transparent; font-family:inherit;
+  }
+  .cta:hover { background:rgba(212,168,67,0.12); }
+  .err { display:none; color:#e08080; font-size:0.9rem; margin-top:12px; text-align:center; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Индекс управляемости</h1>
+  <p class="sub">Введите цифры по своим текущим делам — расчёт займёт 2 минуты.</p>
+ 
+  <label for="total">Всего дел в работе (за последний месяц)</label>
+  <input type="number" id="total" min="1" placeholder="например, 40">
+ 
+  <label for="noowner">Из них — дел без назначенного ответственного</label>
+  <input type="number" id="noowner" min="0" placeholder="например, 12">
+ 
+  <label for="late">Из них — дел, сдвинутых по сроку</label>
+  <input type="number" id="late" min="0" placeholder="например, 9">
+ 
+  <label for="rework">Из них — дел, которые пришлось переделывать</label>
+  <input type="number" id="rework" min="0" placeholder="например, 6">
+ 
+  <div class="err" id="err">Проверьте данные: составляющие не должны превышать общее число дел.</div>
+ 
+  <button onclick="calc()">Рассчитать индекс</button>
+ 
+  <div class="result" id="result">
+    <div class="idx" id="idx">—</div>
+    <div class="verdict" id="verdict"></div>
+    <div class="parts" id="parts"></div>
+    <p class="warn">Чем точнее вы оцифруете дела, тем точнее индекс. Завышенные цифры дадут красивый, но бесполезный результат — игра не проверяет за вас, она фиксирует то, что вы показали.</p>
+    <button class="cta" onclick="go()">Узнать, как поднять индекс — разбор в деловой игре</button>
+  </div>
+</div>
+ 
+<script>
+  function calc() {
+    var t  = +document.getElementById('total').value   || 0;
+    var no = +document.getElementById('noowner').value || 0;
+    var lt = +document.getElementById('late').value    || 0;
+    var rw = +document.getElementById('rework').value  || 0;
+    var err = document.getElementById('err');
+ 
+    if (t < 1 || no > t || lt > t || rw > t) {
+      err.style.display = 'block';
+      document.getElementById('result').style.display = 'none';
+      return;
+    }
+    err.style.display = 'none';
+ 
+    var sOwner = (t - no) / t;   // доля дел с ответственным
+    var sTerm  = (t - lt) / t;   // доля дел в срок
+    var sRw    = (t - rw) / t;   // доля дел без переделок
+    var idx = sOwner * sTerm * sRw;
+ 
+    document.getElementById('idx').textContent = Math.round(idx * 100) + '%';
+ 
+    var v;
+    if (idx >= 0.85)      v = 'Управляемая система. Держите планку — проверяйте индекс раз в месяц.';
+    else if (idx >= 0.60) v = 'Зона риска. Система держится на вас и теряет решения на переделках.';
+    else                  v = 'Критично. Решения буксуют: дело не в людях, а в отсутствии ответственных и критериев.';
+ 
+    document.getElementById('verdict').textContent = v;
+    document.getElementById('parts').innerHTML =
+      'С ответственным: ' + Math.round(sOwner*100) + '% &nbsp;·&nbsp; ' +
+      'в срок: ' + Math.round(sTerm*100) + '% &nbsp;·&nbsp; ' +
+      'без переделок: ' + Math.round(sRw*100) + '%';
+ 
+    document.getElementById('result').style.display = 'block';
+  }
+ 
+  // если калькулятор открыт в iframe — скроллим родительскую страницу к блоку контактов
+  function go() {
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.location.hash = '#contact';
+        window.parent.scrollIntoView;
+      } else {
+        location.href = '#contact';
+      }
+    } catch (e) {
+      location.href = '#contact';
+    }
+  }
+</script>
+</body>
+</html>
